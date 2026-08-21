@@ -49,6 +49,8 @@ dependencies {
 	// Circuit Breaker
 	implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
 	implementation 'io.github.resilience4j:resilience4j-micrometer:2.4.0'
+	// Kafka (room 삭제 이벤트 발행 - SAGA choreography, #40)
+	implementation 'org.springframework.kafka:spring-kafka'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	// Spring Boot 4.x는 MockMvc 테스트 지원(@AutoConfigureMockMvc 등)을 별도 모듈로 분리함
