@@ -31,6 +31,8 @@ dependencies {
 	// Circuit Breaker
 	implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
 	implementation 'io.github.resilience4j:resilience4j-micrometer:2.4.0'
+	// Kafka (room 삭제 이벤트 구독 - SAGA choreography, #40)
+	implementation 'org.springframework.kafka:spring-kafka'
 	// Swagger UI
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 	// Bean Validation

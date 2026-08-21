@@ -28,4 +28,9 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "homework_id", nullable = false)
     private Homework homework;
+
+    // room 삭제 이벤트(RoomDeletedEvent) 소비 시 소속 homework와 함께 일괄 soft-delete됨 (#40)
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 }
