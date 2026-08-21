@@ -76,8 +76,13 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
-        // 1초 간격으로 2번 재시도 후에도 실패하면 원본 토픽명 + ".DLT"로 발행
-        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate);
+        // 1초 간격으로 2번 재시도 후에도 실패하면 원본 토픽명 + ".DLT"로 발행.
+        // DeadLetterPublishingRecoverer의 기본 목적지 리졸버가 실제로는 "room-deleted-dlt"
+        // (소문자+대시, 브로커 auto-create로 생성됨)로 귀결되는 것을 실제 장애 시연(#40 Scenario B)
+        // 중 확인함 - roomDeletedDlt() 빈으로 미리 만들어 둔 "room-deleted.DLT" 토픽과 어긋나서
+        // 명시적으로 목적지를 지정함.
+        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
+                (record, ex) -> new org.apache.kafka.common.TopicPartition(record.topic() + ".DLT", record.partition()));
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(recoverer, new FixedBackOff(1000L, 2L));
         errorHandler.addNotRetryableExceptions(
                 com.fasterxml.jackson.core.JsonProcessingException.class,
