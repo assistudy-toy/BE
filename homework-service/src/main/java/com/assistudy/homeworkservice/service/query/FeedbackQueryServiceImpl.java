@@ -35,7 +35,7 @@ public class FeedbackQueryServiceImpl implements FeedbackQueryService {
 
 	@Override
 	public List<CreateFeedbackResponse> getFeedbacksByHomework(Long homeworkId) {
-		List<Feedback> feedbacks = feedbackRepository.findByHomeworkIdOrderByDateDesc(homeworkId);
+		List<Feedback> feedbacks = feedbackRepository.findByHomeworkIdAndIsDeletedFalseOrderByDateDesc(homeworkId);
 
 		return feedbacks.stream()
 				.map(FeedbackConverter::toCreateFeedbackResponse)
@@ -95,7 +95,7 @@ public class FeedbackQueryServiceImpl implements FeedbackQueryService {
 		List<HostFeedbackResponse.HomeworkFeedbackInfo> homeworkFeedbackInfos = homeworks.stream()
 				.map(homework -> {
 					// 해당 과제의 모든 피드백 조회
-					List<Feedback> feedbacks = feedbackRepository.findByHomeworkIdOrderByDateDesc(homework.getId());
+					List<Feedback> feedbacks = feedbackRepository.findByHomeworkIdAndIsDeletedFalseOrderByDateDesc(homework.getId());
 					Map<Long, Feedback> feedbackMap = feedbacks.stream()
 							.collect(Collectors.toMap(Feedback::getUserId, feedback -> feedback));
 

@@ -26,4 +26,9 @@ public class Homework {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
+
+    // room 삭제 이벤트(RoomDeletedEvent) 소비 시 일괄 soft-delete됨 (choreography SAGA, #40)
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 }

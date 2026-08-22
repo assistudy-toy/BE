@@ -1,4 +1,6 @@
 spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
   datasource:
     url: jdbc:mysql://${MYSQL_HOMEWORK_HOST}:${MYSQL_HOMEWORK_PORT}/${MYSQL_HOMEWORK_DB}?useSSL=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${MYSQL_DB_USER}

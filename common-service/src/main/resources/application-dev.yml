@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9103}
   datasource:
     url: jdbc:mysql://${MYSQL_COMMON_HOST:localhost}:${MYSQL_COMMON_PORT:3306}/${MYSQL_COMMON_DB:assistudy_common}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${MYSQL_DB_USER:assistudy}

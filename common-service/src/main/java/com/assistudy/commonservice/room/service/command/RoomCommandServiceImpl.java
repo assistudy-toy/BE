@@ -12,11 +12,15 @@ import com.assistudy.commonservice.room.exception.RoomErrorCode;
 import com.assistudy.commonservice.room.exception.RoomException;
 import com.assistudy.commonservice.room.repository.RoomParticipantRepository;
 import com.assistudy.commonservice.room.repository.RoomRepository;
+import com.assistudy.shared.event.RoomDeletedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -27,6 +31,7 @@ public class RoomCommandServiceImpl implements RoomCommandService {
     private final RoomRepository roomRepository;
     private final RoomParticipantRepository roomParticipantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public CreateRoomResponse createRoom(CreateRoomRequest request, Long hostUserId) {
@@ -132,6 +137,9 @@ public class RoomCommandServiceImpl implements RoomCommandService {
         // 방 soft delete
         room.softDelete();
         roomRepository.save(room);
+
+        // homework-service에 room 삭제를 알림(choreography SAGA) - 트랜잭션 커밋 후에만 발행됨
+        eventPublisher.publishEvent(new RoomDeletedEvent(roomId, room.getHostUserId(), LocalDateTime.now()));
     }
 
     // ================= 내부 유틸 메서드 =================

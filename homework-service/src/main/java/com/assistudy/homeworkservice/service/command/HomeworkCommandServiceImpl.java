@@ -53,6 +53,7 @@ public class HomeworkCommandServiceImpl implements HomeworkCommandService {
                 .roomId(homework.getRoomId())
                 .date(homework.getDate())  // 기존 날짜 유지
                 .comment(request.getComment() != null ? request.getComment() : homework.getComment())
+                .isDeleted(homework.getIsDeleted())  // builder로 재생성하면서 soft-delete 상태가 초기화되지 않도록 유지
                 .build();
 
         Homework savedHomework = homeworkRepository.save(updatedHomework);

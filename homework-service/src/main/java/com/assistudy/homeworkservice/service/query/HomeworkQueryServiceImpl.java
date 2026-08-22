@@ -62,7 +62,7 @@ public class HomeworkQueryServiceImpl implements HomeworkQueryService {
 				.toList();
 
 		// 방마다 반복 조회하던 과제 목록을 한 번에 조회해서 room_id로 묶어둠
-		Map<Long, List<Homework>> homeworksByRoomId = homeworkRepository.findByRoomIdInOrderByDateDesc(roomIds).stream()
+		Map<Long, List<Homework>> homeworksByRoomId = homeworkRepository.findByRoomIdInAndIsDeletedFalseOrderByDateDesc(roomIds).stream()
 				.collect(Collectors.groupingBy(Homework::getRoomId));
 
 		// 피드백은 "호스트가 아닌 방"의 과제에서만 실제로 쓰이니(아래 !isHost 분기),
@@ -81,7 +81,7 @@ public class HomeworkQueryServiceImpl implements HomeworkQueryService {
 		// 과제마다 반복 조회하던 피드백도 한 번에 조회해서 homework_id로 묶어둠
 		Map<Long, List<Feedback>> feedbacksByHomeworkId = homeworkIdsNeedingFeedback.isEmpty()
 				? Map.of()
-				: feedbackRepository.findByHomeworkIdInOrderByDateDesc(homeworkIdsNeedingFeedback).stream()
+				: feedbackRepository.findByHomeworkIdInAndIsDeletedFalseOrderByDateDesc(homeworkIdsNeedingFeedback).stream()
 						.collect(Collectors.groupingBy(feedback -> feedback.getHomework().getId()));
 
 		List<UserParticipatedRoomsWithHomeworkResponse.RoomWithHomeworkInfo> roomInfos = participations.stream()

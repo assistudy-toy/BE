@@ -74,6 +74,7 @@ public class FeedbackCommandServiceImpl implements FeedbackCommandService {
                 .userId(feedback.getUserId())
                 .date(feedback.getDate())
                 .feedback(request.getFeedback())
+                .isDeleted(feedback.getIsDeleted())  // builder로 재생성하면서 soft-delete 상태가 초기화되지 않도록 유지
                 .build();
 
         feedbackRepository.save(updatedFeedback);
@@ -92,7 +93,7 @@ public class FeedbackCommandServiceImpl implements FeedbackCommandService {
     }
 
     private void validateDuplicateFeedback(Long homeworkId, Long userId) {
-        if (feedbackRepository.findByHomeworkIdAndUserId(homeworkId, userId).isPresent()) {
+        if (feedbackRepository.findByHomeworkIdAndUserIdAndIsDeletedFalse(homeworkId, userId).isPresent()) {
             throw new FeedbackException(FeedbackErrorCode.FEEDBACK_ALREADY_EXISTS);
         }
     }
