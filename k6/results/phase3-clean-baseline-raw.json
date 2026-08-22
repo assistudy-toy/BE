@@ -1,0 +1,51 @@
+{
+  "methodology": "웜업 상태, 동시성 없이 순차 10회 호출(1초 간격), 첫 콜드 콜은 제외. Zipkin API로 각 요청의 CLIENT span duration(microseconds)을 직접 추출.",
+  "homework_service_to_common_service": {
+    "endpoint": "GET /rooms/internal/participated-class-rooms (via /homeworks/my-participated-rooms)",
+    "unit": "microseconds",
+    "samples": [19321, 18767, 19166, 24393, 19215, 18480, 19878, 17814, 19205, 23220],
+    "avg_ms": 19.95,
+    "range_ms": [17.8, 24.4]
+  },
+  "webrtc_service_to_common_service_getRoom": {
+    "endpoint": "GET /rooms/internal/{roomId}",
+    "unit": "microseconds",
+    "samples_excluding_first_cold_call": [16433, 16533, 16934, 17818, 15639, 16735, 16830, 16901, 16508],
+    "avg_ms": 16.7,
+    "range_ms": [15.6, 17.8]
+  },
+  "webrtc_service_to_common_service_checkParticipant": {
+    "endpoint": "GET /rooms/internal/{roomId}/participants/{userId}/exists",
+    "unit": "microseconds",
+    "samples_excluding_outliers": [14753, 15624, 15264, 15022, 15870, 16753, 14792],
+    "excluded_outliers": [63998, 33148],
+    "avg_ms": 15.4,
+    "range_ms": [15.0, 16.8]
+  },
+  "webrtc_service_to_common_service_countParticipants": {
+    "endpoint": "GET /rooms/internal/{roomId}/participants/count",
+    "unit": "microseconds",
+    "samples_excluding_outliers": [14364, 15707, 15391, 14794, 16094, 15029, 14869, 14845],
+    "excluded_outliers": [35436],
+    "avg_ms": 15.1,
+    "range_ms": [14.4, 16.1]
+  },
+  "webrtc_service_to_user_service_getUserInfo": {
+    "endpoint": "GET /users/internal/{userId}",
+    "unit": "microseconds",
+    "samples_excluding_outliers": [16399, 16719, 16298, 15965, 16650, 16691, 16264, 16161],
+    "excluded_outliers": [42691],
+    "avg_ms": 16.4,
+    "range_ms": [16.2, 16.7]
+  },
+  "reference_trace_ids": {
+    "homework_full_round_trip_success": "6a8847a1de66592cd45c80093332946e",
+    "homework_cb_fail_closed": "6a884796feaff4af1df3aa965b1336e7",
+    "webrtc_examples": ["6a884afe65162d6efb421eeaaec00a01", "6a884afd43e016227d5bd3465a696298"]
+  },
+  "phase0_baseline_for_comparison": {
+    "endpoint": "common-service -> user-service (Feign, userServiceClient.getUsersInfo)",
+    "avg_ms": 22,
+    "range_ms": [18, 29]
+  }
+}

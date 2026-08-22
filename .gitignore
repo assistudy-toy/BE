@@ -27,6 +27,3 @@ logs/
 # Spring Boot
 HELP.md
 /native-config-repo
-
-# k6 결과 리포트
-k6/results/

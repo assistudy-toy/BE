@@ -1,0 +1,30 @@
+k6 run -e BASE_URL=http://<ALB> -e TEST_EMAIL=k6test@test.com -e TEST_PASSWORD=testtest12! -e RUN_LABEL=after-split -e VUS=5 -e DURATION=30s scenarios/04-query-optimization.js
+(2026-08-21, common-service의 recommend-candidates 캐시 버그 수정 전 실행)
+
+     ✓ rooms-list - status 200
+     ✓ rooms-search - status 200
+     ✗ rooms-recommend - status 200
+      ↳  0% — ✓ 0 / ✗ 46
+     ✓ total-ranking - status 200
+     ✓ total-grass - status 200
+     ✓ homeworks-participated - status 200
+
+     checks........................: 83.33% ✓ 230      ✗ 46
+     data_received..................: 16 MB  505 kB/s
+     data_sent......................: 193 kB 6.0 kB/s
+     homeworks_participated_duration: avg=222.543524 med=142.74335  p(90)=415.2247 p(95)=663.58755   p(99)=798.282685  max=844.8229
+     http_req_duration..............: avg=231.6ms    med=144.23ms  p(90)=499ms    p(95)=735.04ms    p(99)=1.15s       max=1.29s
+     http_req_failed................: 16.60% ✓ 46       ✗ 231
+     http_reqs......................: 277    8.58546/s
+     iterations.....................: 46     1.425744/s
+     rooms_list_duration............: avg=359.272724 med=269.66385 p(90)=773.9169 p(95)=1041.1005   p(99)=1156.635115 max=1159.1242
+     rooms_recommend_duration.......: avg=130.442448 med=114.3582  p(90)=208.6573 p(95)=298.9805    p(99)=394.51157   max=395.5976
+     rooms_search_duration..........: avg=464.992665 med=403.4593  p(90)=937.7783 p(95)=1067.750625 p(99)=1257.584955 max=1292.4096
+     total_grass_duration...........: avg=142.36112  med=114.7424  p(90)=216.9354 p(95)=259.188175  p(99)=280.689535  max=292.8925
+     total_ranking_duration.........: avg=70.169715  med=76.4258   p(90)=102.2369 p(95)=118.9739    p(99)=152.92838   max=172.9226
+     vus............................: 1      min=1      max=5
+     vus_max.........................: 5      min=5      max=5
+
+원인: rooms-recommend 100% 실패 - recommend-candidates Redis 캐시가
+GenericJackson2JsonRedisSerializer + 최상위 raw List<T> 조합에서 역직렬화 실패
+(쓰기는 성공, 읽기에서만 실패). 커밋 0012ad8/a495b4d로 수정.

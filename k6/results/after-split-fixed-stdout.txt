@@ -1,0 +1,32 @@
+k6 run -e BASE_URL=http://<ALB> -e TEST_EMAIL=k6test@test.com -e TEST_PASSWORD=testtest12! -e RUN_LABEL=after-split-fixed -e VUS=5 -e DURATION=30s scenarios/04-query-optimization.js
+(2026-08-21, recommend-candidates 캐시 버그 수정 배포 후 재실행)
+
+     ✓ rooms-list - status 200
+     ✓ rooms-search - status 200
+     ✓ rooms-recommend - status 200
+     ✓ total-ranking - status 200
+     ✓ total-grass - status 200
+     ✗ homeworks-participated - status 200
+      ↳  76% — ✓ 23 / ✗ 7
+
+     checks..........................: 96.11% ✓ 173      ✗ 7
+     data_received....................: 10 MB  324 kB/s
+     data_sent........................: 126 kB 4.0 kB/s
+     homeworks_participated_duration..: avg=1212.154177 med=316.136   p(90)=6019.57818 p(95)=6028.49739  p(99)=6036.732072 max=6038.763
+     http_req_duration................: avg=530.35ms    med=299.71ms  p(90)=702.67ms   p(95)=1.81s       p(99)=6.02s       max=6.03s
+     http_req_failed..................: 3.86%  ✓ 7        ✗ 174
+     http_reqs........................: 181    5.737556/s
+     iterations.......................: 30     0.950976/s
+     rooms_list_duration..............: avg=631.13055   med=421.156   p(90)=1817.16213 p(95)=1868.071415 p(99)=1916.174276 max=1919.3195
+     rooms_recommend_duration.........: avg=305.27687   med=298.2346  p(90)=410.80133  p(95)=459.86401   p(99)=499.941559  max=502.0507
+     rooms_search_duration............: avg=741.588553  med=646.77815 p(90)=1504.38206 p(95)=1699.20914  p(99)=1785.601034 max=1785.9332
+     total_grass_duration.............: avg=216.735377  med=207.14915 p(90)=385.49805  p(95)=398.022535  p(99)=473.603946  max=504.2606
+     total_ranking_duration...........: avg=87.443447   med=98.30575  p(90)=124.65976  p(95)=135.406235  p(99)=140.858028  max=142.8349
+     vus...............................: 4      min=4      max=5
+     vus_max...........................: 5      min=5      max=5
+
+rooms-recommend: 100% 성공 (버그 수정 확인).
+homeworks-participated 7/30 실패: roomService Circuit Breaker가 동시 부하로
+실제 OPEN -> HALF_OPEN 전환되며 fail-closed 500 반환 (설계대로 동작, 버그 아님).
+증거 trace: 6a884796feaff4af1df3aa965b1336e7 (gateway 26.5ms -> homework-service
+18.8ms, 500, Feign 호출 시도 자체가 없음 = fail-fast 확인).

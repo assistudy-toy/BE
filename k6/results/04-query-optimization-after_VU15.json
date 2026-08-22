@@ -1,0 +1,322 @@
+{
+  "root_group": {
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [],
+    "checks": [
+        {
+          "name": "rooms-list - status 200",
+          "path": "::rooms-list - status 200",
+          "id": "b24c66be56255836a6947e056c305255",
+          "passes": 15,
+          "fails": 0
+        },
+        {
+          "name": "rooms-search - status 200",
+          "path": "::rooms-search - status 200",
+          "id": "20bad1255036577c66fca8b2c6f5321b",
+          "passes": 15,
+          "fails": 0
+        },
+        {
+          "passes": 15,
+          "fails": 0,
+          "name": "rooms-recommend - status 200",
+          "path": "::rooms-recommend - status 200",
+          "id": "daf5ceb406be044e56f5ebbe9361b8b3"
+        },
+        {
+          "id": "d5eb606121ff65d587f4f8dad79bfeae",
+          "passes": 15,
+          "fails": 0,
+          "name": "total-ranking - status 200",
+          "path": "::total-ranking - status 200"
+        },
+        {
+          "name": "total-grass - status 200",
+          "path": "::total-grass - status 200",
+          "id": "759447b1e79a24bf9b3436fd20eba886",
+          "passes": 15,
+          "fails": 0
+        },
+        {
+          "name": "homeworks-participated - status 200",
+          "path": "::homeworks-participated - status 200",
+          "id": "bc5da304b513c54430d961be85dee8b9",
+          "passes": 15,
+          "fails": 0
+        }
+      ]
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "med",
+      "p(90)",
+      "p(95)",
+      "p(99)",
+      "max"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  },
+  "state": {
+    "isStdOutTTY": false,
+    "isStdErrTTY": false,
+    "testRunDurationMs": 7858.732662
+  },
+  "metrics": {
+    "total_grass_duration": {
+      "contains": "default",
+      "values": {
+        "p(90)": 359.03667599999994,
+        "p(95)": 425.9945558999999,
+        "p(99)": 479.16976637999994,
+        "max": 492.463569,
+        "avg": 233.9098452,
+        "med": 198.730916
+      },
+      "type": "trend"
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 18.801128,
+        "avg": 2.2018528571428573,
+        "med": 0,
+        "p(90)": 10.09733,
+        "p(95)": 15.3412805,
+        "p(99)": 17.50730689999999
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 29.571627,
+        "avg": 4.063472934065935,
+        "med": 0,
+        "p(90)": 23.533571,
+        "p(95)": 25.566419500000002,
+        "p(99)": 29.360893799999996
+      }
+    },
+    "iterations": {
+      "values": {
+        "count": 15,
+        "rate": 1.9087047040715328
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 65270,
+        "rate": 8305.410402316596
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 2043.4169255000002,
+        "p(99)": 2199.4935252,
+        "max": 2205.684744,
+        "avg": 845.5445835274728,
+        "med": 725.472947,
+        "p(90)": 1802.965942
+      }
+    },
+    "total_ranking_duration": {
+      "values": {
+        "avg": 343.6290260666667,
+        "med": 197.556652,
+        "p(90)": 610.0484161999999,
+        "p(95)": 965.590292699999,
+        "p(99)": 1476.6248553399994,
+        "max": 1604.383496
+      },
+      "type": "trend",
+      "contains": "default"
+    },
+    "http_req_blocked": {
+      "values": {
+        "med": 0.000411,
+        "p(90)": 35.347069,
+        "p(95)": 39.460383500000006,
+        "p(99)": 39.88920859999999,
+        "max": 41.099102,
+        "avg": 6.481830032967035
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 845.5445835274728,
+        "med": 725.472947,
+        "p(90)": 1802.965942,
+        "p(95)": 2043.4169255000002,
+        "p(99)": 2199.4935252,
+        "max": 2205.684744
+      }
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 15,
+        "value": 15,
+        "min": 15
+      }
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 109.6061385,
+        "p(99)": 126.45166549999942,
+        "max": 218.635241,
+        "avg": 31.95189756043956,
+        "med": 7.991227,
+        "p(90)": 99.578965
+      }
+    },
+    "checks": {
+      "contains": "default",
+      "values": {
+        "fails": 0,
+        "rate": 1,
+        "passes": 90
+      },
+      "type": "rate"
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 2205.553487,
+        "avg": 813.4452256483523,
+        "med": 673.877552,
+        "p(90)": 1802.859055,
+        "p(95)": 2041.7183945000002,
+        "p(99)": 2199.3323809999997
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 15,
+        "value": 15,
+        "min": 15
+      }
+    },
+    "rooms_search_duration": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "p(95)": 792.5033043,
+        "p(99)": 802.18128086,
+        "max": 804.600775,
+        "avg": 733.3878418,
+        "med": 761.511467,
+        "p(90)": 787.2099732
+      }
+    },
+    "homeworks_participated_duration": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "avg": 1222.7537544666668,
+        "med": 1217.992248,
+        "p(90)": 1392.7703134,
+        "p(95)": 1421.0878834,
+        "p(99)": 1439.09401588,
+        "max": 1443.595549
+      }
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 91,
+        "rate": 0,
+        "passes": 0
+      }
+    },
+    "rooms_recommend_duration": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "p(99)": 2204.72166552,
+        "max": 2205.684744,
+        "avg": 1811.0295612666666,
+        "med": 1897.774343,
+        "p(90)": 2190.8527792,
+        "p(95)": 2200.8693516000003
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(90)": 7545.7371268,
+        "p(95)": 7559.9846714000005,
+        "p(99)": 7584.61700948,
+        "max": 7590.775094,
+        "avg": 7159.006211599999,
+        "med": 7055.052269
+      }
+    },
+    "http_reqs": {
+      "contains": "default",
+      "values": {
+        "count": 91,
+        "rate": 11.579475204700632
+      },
+      "type": "counter"
+    },
+    "data_received": {
+      "contains": "data",
+      "values": {
+        "count": 5452664,
+        "rate": 693835.0284347667
+      },
+      "type": "counter"
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.14746031868131865,
+        "med": 0.113613,
+        "p(90)": 0.266663,
+        "p(95)": 0.332928,
+        "p(99)": 0.4138609999999999,
+        "max": 0.423257
+      }
+    },
+    "rooms_list_duration": {
+      "values": {
+        "avg": 769.8117460666667,
+        "med": 715.311512,
+        "p(90)": 925.702406,
+        "p(95)": 926.9342866000001,
+        "p(99)": 928.7534589200001,
+        "max": 929.208252
+      },
+      "type": "trend",
+      "contains": "default"
+    }
+  },
+  "setup_data": {
+    "token": "eyJhbGciOiJSUzI1NiJ9.eyJ1c2VySWQiOjMsInN1YiI6IjMiLCJpYXQiOjE3ODY5MDU5NTMsImV4cCI6MTc4Njk5MjM1MywianRpIjoiOTViZGM4NzItODNiMi00YTAwLTgwMDEtYjU0NzQ5YzE2ZGNjIn0.a7os9LlqzUTOOF5caLiUHTVhwxuPwFA00A4ryQDnjy2okIPqM46wYUuCfkDFdhVbOwba-wqisyMcglU9jj5QTFHCHFp70NS_BltZBtMHAw0G081LUQXSDORVpUUF1PdWN8tBf09xx1lrOXrlrsLj_cG0RzjWNkKrezCwmhdUarGfqvpj51rmMUVb7czCRW9NjpekLjbmETnutCYYnaFFPLg5RBqDtGCQGbXTwgaje6i1e4rVkfl28Y_OfISUMf7kNgIxDEROeclVZswFjlJrPzJH6bn3IuEp6ybZVGuGw5vFpPVGZTmtcePhC2vrxtyEJ6vX4suCMhOdzeF6bJJSbA"
+  }
+}
