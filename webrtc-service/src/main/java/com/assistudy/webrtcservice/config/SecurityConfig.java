@@ -9,13 +9,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Set;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public InternalAuthFilter internalAuthFilter() {
-        return new InternalAuthFilter();
+        // /webrtc/internal/**은 common-service가 서비스 간 직접 호출(게이트웨이를 거치지 않음)로
+        // 부르는 경로라 X-User-Id 헤더가 없음 - common-service의 /rooms/internal 처리와 동일한 패턴
+        return new InternalAuthFilter(Set.of("/webrtc/internal"));
     }
 
     @Bean

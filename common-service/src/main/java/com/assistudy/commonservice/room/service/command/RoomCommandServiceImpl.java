@@ -1,5 +1,6 @@
 package com.assistudy.commonservice.room.service.command;
 
+import com.assistudy.commonservice.global.client.WebRtcServiceClient;
 import com.assistudy.commonservice.room.converter.RoomConverter;
 import com.assistudy.commonservice.room.dto.request.CreateRoomRequest;
 import com.assistudy.commonservice.room.dto.request.JoinRoomRequest;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +34,8 @@ public class RoomCommandServiceImpl implements RoomCommandService {
     private final RoomParticipantRepository roomParticipantRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
+    private final WebRtcServiceClient webRtcServiceClient;
+    private final TransactionTemplate requiresNewTransactionTemplate;
 
     @Override
     public CreateRoomResponse createRoom(CreateRoomRequest request, Long hostUserId) {
@@ -46,17 +50,45 @@ public class RoomCommandServiceImpl implements RoomCommandService {
             throw new RoomException(RoomErrorCode.INVALID_ROOM_REQUEST);
         }
 
-        String password = null;
-        if (request.getPassword() != null) {
-            password = passwordEncoder.encode(request.getPassword());
-        }
-        Room room = request.toEntity(hostUserId, password);
+        String password = request.getPassword() != null ? passwordEncoder.encode(request.getPassword()) : null;
 
-        // 참가자 생성
-        Room savedRoom = roomRepository.save(room);
-        registerHostAsParticipant(savedRoom, hostUserId);
+        // REQUIRES_NEW로 별도 트랜잭션에 즉시 커밋 - 바깥 트랜잭션과 무관하게 DB에 반영되어야
+        // 아래 webrtc-service 호출이 실패했을 때의 삭제가 "이미 커밋된 걸 되돌리는" 진짜
+        // 보상 트랜잭션이 된다(단순 롤백이 아님).
+        Room savedRoom = requiresNewTransactionTemplate.execute(status -> {
+            Room room = request.toEntity(hostUserId, password);
+            Room saved = roomRepository.save(room);
+            registerHostAsParticipant(saved, hostUserId);
+            return saved;
+        });
+
+        try {
+            webRtcServiceClient.provisionRoom(savedRoom.getId());
+        } catch (Exception e) {
+            log.error("[SAGA] LiveKit 방 프로비저닝 실패 - roomId={}, 보상 트랜잭션(방 삭제) 수행: {}",
+                    savedRoom.getId(), e.getMessage());
+            compensateFailedRoomCreation(savedRoom.getId());
+            throw new RoomException(RoomErrorCode.ROOM_PROVISIONING_FAILED);
+        }
 
         return RoomConverter.toCreateRoomResponse(savedRoom);
+    }
+
+    /**
+     * 방 생성 SAGA의 보상 트랜잭션 - webrtc-service의 LiveKit 방 생성이 실패하면
+     * 이미 커밋된 Room/RoomParticipant를 별도 트랜잭션으로 되돌린다. 방이 실제로
+     * 한 번도 쓰인 적 없는 상태(생성 직후 실패)라 deleteRoom()의 사용자 알림/권한
+     * 검증 로직을 그대로 타지 않고 바로 soft-delete한다.
+     */
+    private void compensateFailedRoomCreation(Long roomId) {
+        requiresNewTransactionTemplate.executeWithoutResult(status -> {
+            roomParticipantRepository.softDeleteAllByRoomId(roomId);
+            Room room = roomRepository.findById(roomId).orElse(null);
+            if (room != null) {
+                room.softDelete();
+                roomRepository.save(room);
+            }
+        });
     }
 
     @Override

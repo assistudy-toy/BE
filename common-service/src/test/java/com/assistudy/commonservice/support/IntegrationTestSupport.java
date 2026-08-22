@@ -1,6 +1,7 @@
 package com.assistudy.commonservice.support;
 
 import com.assistudy.commonservice.global.client.UserServiceClient;
+import com.assistudy.commonservice.global.client.WebRtcServiceClient;
 import com.assistudy.commonservice.global.dto.response.UserInfoResponse;
 import com.assistudy.shared.response.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,6 +80,9 @@ public abstract class IntegrationTestSupport {
     @MockitoBean
     protected UserServiceClient userServiceClient;
 
+    @MockitoBean
+    protected WebRtcServiceClient webRtcServiceClient;
+
     protected static UserInfoResponse stubUser(Long id) {
         return new UserInfoResponse(id, "user" + id + "@test.com", "user" + id, null);
     }
@@ -93,5 +97,10 @@ public abstract class IntegrationTestSupport {
                     List<Long> ids = inv.getArgument(0);
                     return ApiResponse.onSuccess(ids.stream().map(IntegrationTestSupport::stubUser).toList());
                 });
+
+        // 기본값: LiveKit 방 프로비저닝 성공(아무 것도 안 함). 보상 트랜잭션 테스트는
+        // 개별 테스트에서 doThrow(...)로 재정의한다.
+        reset(webRtcServiceClient);
+        lenient().doNothing().when(webRtcServiceClient).provisionRoom(anyLong());
     }
 }

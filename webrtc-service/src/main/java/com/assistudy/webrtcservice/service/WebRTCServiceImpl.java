@@ -10,13 +10,18 @@ import com.assistudy.webrtcservice.global.client.UserServiceClient;
 import com.assistudy.webrtcservice.global.dto.response.RoomSummaryResponse;
 import com.assistudy.webrtcservice.global.dto.response.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
+
+import java.io.IOException;
 
 /**
  * WebRTC 서비스 구현 클래스
  * 화상회의 관련 비즈니스 로직을 처리합니다.
  * OpenVidu 3.x LiveKit 기반으로 동작하며, room 데이터는 common-service를 RoomServiceClient로 조회한다.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WebRTCServiceImpl implements WebRTCService {
@@ -24,6 +29,7 @@ public class WebRTCServiceImpl implements WebRTCService {
     private final OpenViduService openViduService;
     private final RoomServiceClient roomServiceClient;
     private final UserServiceClient userServiceClient;
+    private final io.livekit.server.RoomServiceClient liveKitRoomServiceClient;
 
     @Override
     public TokenResponse createToken(CreateTokenRequest request, Long userId) {
@@ -49,6 +55,22 @@ public class WebRTCServiceImpl implements WebRTCService {
         String participantName = userInfo.getNickname();
 
         return WebRTCConverter.toTokenResponse(room, token, participantName, currentParticipants);
+    }
+
+    @Override
+    public void provisionRoom(Long roomId) {
+        String roomName = "room_" + roomId;
+        try {
+            Response<livekit.LivekitModels.Room> response = liveKitRoomServiceClient.createRoom(roomName).execute();
+            if (!response.isSuccessful()) {
+                log.error("[LiveKit] 방 생성 실패 - roomName={}, httpStatus={}", roomName, response.code());
+                throw new WebRTCException(WebRTCErrorCode.ROOM_PROVISIONING_FAILED);
+            }
+            log.info("[LiveKit] 방 생성 성공 - roomName={}", roomName);
+        } catch (IOException e) {
+            log.error("[LiveKit] 방 생성 요청 실패(네트워크) - roomName={}, cause={}", roomName, e.getMessage());
+            throw new WebRTCException(WebRTCErrorCode.ROOM_PROVISIONING_FAILED);
+        }
     }
 
     // ================= 내부 유틸 메서드 =================

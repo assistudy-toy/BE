@@ -25,7 +25,8 @@ public enum WebRTCErrorCode implements BaseErrorCode {
     INVALID_WEBHOOK_DATA(HttpStatus.BAD_REQUEST, "WEBRTC013", "유효하지 않은 Webhook 데이터입니다."),
     SESSION_CLEANUP_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "WEBRTC014", "세션 정리 중 오류가 발생했습니다."),
     TOKEN_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "WEBRTC015", "토큰 생성에 실패했습니다."),
-    USER_INFO_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "WEBRTC016", "사용자 정보 조회에 실패했습니다.");
+    USER_INFO_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "WEBRTC016", "사용자 정보 조회에 실패했습니다."),
+    ROOM_PROVISIONING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "WEBRTC017", "LiveKit 방 생성에 실패했습니다.");
 
     private final HttpStatus status;
     private final String code;

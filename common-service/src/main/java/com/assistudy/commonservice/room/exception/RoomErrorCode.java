@@ -24,7 +24,8 @@ public enum RoomErrorCode implements BaseErrorCode {
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "ROOM012", "비밀번호가 일치하지 않습니다."),
     INVALID_ROOM_REQUEST(HttpStatus.BAD_REQUEST, "ROOM013", "유효하지 않은 방 요청입니다."),
     ROOM_MAX_PARTICIPANTS_TOO_SMALL(HttpStatus.BAD_REQUEST, "ROOM014", "최대 참여자 수는 현재 참여자 수보다 적을 수 없습니다."),
-    NO_UPDATE_FIELDS(HttpStatus.BAD_REQUEST, "ROOM015", "업데이트할 필드가 없습니다.");
+    NO_UPDATE_FIELDS(HttpStatus.BAD_REQUEST, "ROOM015", "업데이트할 필드가 없습니다."),
+    ROOM_PROVISIONING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ROOM016", "화상회의 방 생성에 실패해 방 생성이 취소되었습니다.");
 
     private final HttpStatus status;
     private final String code;
