@@ -5,6 +5,16 @@
 - 리팩토링 이전 상태가 궁금하다면 → [JH627/assistudy](https://github.com/JH627/assistudy)
 - 이슈/PR/마일스톤 전체 이력 → [Milestones](https://github.com/assistudy-toy/BE/milestones?state=closed)
 
+## 아키텍처
+
+### AWS 인프라
+
+![AWS 인프라](image/aws-infra.png)
+
+### 서비스 흐름 (논리 아키텍처)
+
+![서비스 흐름](image/logical-architecture.png)
+
 ## 서비스 구성
 
 | 서비스                | 포트 | 역할                                                                                                          |
