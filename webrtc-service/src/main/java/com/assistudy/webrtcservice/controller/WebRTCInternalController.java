@@ -27,6 +27,6 @@ public class WebRTCInternalController {
     @Operation(summary = "LiveKit 방 프로비저닝", description = "방 생성 SAGA에서 common-service가 호출 - LiveKit 서버에 실제 방 리소스를 생성한다.")
     public ApiResponse<Void> provisionRoom(@PathVariable("roomId") Long roomId) {
         webRTCService.provisionRoom(roomId);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.onSuccess();
     }
 }
