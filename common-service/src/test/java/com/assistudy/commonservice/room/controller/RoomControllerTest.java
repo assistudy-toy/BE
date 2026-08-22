@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -70,6 +72,31 @@ class RoomControllerTest extends IntegrationTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result.name").value("스터디방"))
                 .andExpect(jsonPath("$.result.maxParticipants").value(4));
+    }
+
+    @Test
+    void LiveKit_방_프로비저닝이_실패하면_보상_트랜잭션으로_방_생성이_취소된다() throws Exception {
+        doThrow(new RuntimeException("LiveKit down")).when(webRtcServiceClient).provisionRoom(anyLong());
+
+        CreateRoomRequest request = CreateRoomRequest.builder()
+                .name("프로비저닝실패방")
+                .type(RoomType.STUDY)
+                .isPrivate(false)
+                .micActive(true)
+                .maxParticipants(4)
+                .build();
+
+        mockMvc.perform(post("/rooms")
+                        .header(HeaderConstants.USER_ID_HEADER, HOST_ID)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value("ROOM016"));
+
+        boolean anyActiveRoomWithThatName = roomRepository.findAll().stream()
+                .filter(r -> "프로비저닝실패방".equals(r.getName()))
+                .anyMatch(r -> !r.getIsDeleted());
+        assertThat(anyActiveRoomWithThatName).isFalse();
     }
 
     @Test

@@ -16,4 +16,10 @@ public interface WebRTCService {
      * @return 토큰 응답 정보
      */
     TokenResponse createToken(CreateTokenRequest request, Long userId);
+
+    /**
+     * LiveKit 서버에 실제 방 리소스를 생성한다(방 생성 SAGA에서 common-service가 호출).
+     * @param roomId common-service의 room ID
+     */
+    void provisionRoom(Long roomId);
 }
