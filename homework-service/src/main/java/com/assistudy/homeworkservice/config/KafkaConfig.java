@@ -1,5 +1,6 @@
 package com.assistudy.homeworkservice.config;
 
+import io.micrometer.observation.ObservationRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -64,17 +65,24 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, String> kafkaTemplate(ObservationRegistry observationRegistry) {
+        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory());
+        template.setObservationEnabled(true);
+        template.setObservationRegistry(observationRegistry);
+        return template;
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
-            KafkaTemplate<String, String> kafkaTemplate) {
+            KafkaTemplate<String, String> kafkaTemplate, ObservationRegistry observationRegistry) {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        // Zipkin에서 common-service의 방 삭제 요청 트레이스와 이 컨슈머 처리를 하나로 이어보기 위해
+        // 활성화 (수동 빈이라 Boot 자동설정을 안 타서 명시적으로 켜야 함)
+        factory.getContainerProperties().setObservationEnabled(true);
+        factory.getContainerProperties().setObservationRegistry(observationRegistry);
 
         // 1초 간격으로 2번 재시도 후에도 실패하면 원본 토픽명 + ".DLT"로 발행.
         // DeadLetterPublishingRecoverer의 기본 목적지 리졸버가 실제로는 "room-deleted-dlt"

@@ -1,5 +1,6 @@
 package com.assistudy.commonservice.config;
 
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -36,8 +37,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, String> kafkaTemplate(ObservationRegistry observationRegistry) {
+        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory());
+        // Zipkin에서 방 삭제 HTTP 요청 -> Kafka 발행 -> homework-service 소비까지 하나의
+        // 트레이스로 이어서 보기 위해 명시적으로 활성화 (수동 빈이라 Boot 자동설정을 안 탐)
+        template.setObservationEnabled(true);
+        template.setObservationRegistry(observationRegistry);
+        return template;
     }
 
     @Bean
